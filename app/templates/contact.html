@@ -1,47 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title></title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
-    </head>
-    <body>
-        <main>
-            >{% block main %}
-            <h2>Contact form</h2><hr>
-            <p>Fill in this form to contact the site owner</p>
-            <form method=post action="" name='form'>
-                {{ form.csrf_token }} 
-                  <!--<label for="name">Name</label><br>-->
-                  <!--<p>Please enter your full name</p>-->
-                  <!--<input type="text" name="name">-->
-                  
-                  <!--<label for="email">Email</label><br>-->
-                  <!--<p>Please enter your e-mail address</p>-->
-                  <!--<input type="email" name="email">-->
-                  
-                  <!--<label for="subject">Subject</label><br>-->
-                  <!--<p>Please enter the subject for your message.</p>-->
-                  <!--<input type="text" name="subject">-->
-                  
-                  <!--<label for="message">Message</label><br>-->
-                  <!--<p>Please enter the massage you would like to send</p>-->
-                  <!--<input type="text" name="message">-->
-                {{ form.field_name.label }}
-                Please enter your full name
-                {{ form.field_name }}
-                {{ form.field_email.label }}
-                Please enter your e-mail address
-                {{ form.field_email }}
-                {{ form.field_subject.label }}
-                Please enter the subject for your message
-                {{ form.field_subject }}
-                {{ form.field_message.label }}
-                Please enter the massage you would like to send
-                {{ form.field_message }}
-                
-                <input type="submit" value="Send">
-            </form>
-            {% endblock %}
-        </main>
-    </body>
-</html>
+{% extends "base.html" %}
+
+
+{%block main %}
+
+<h1>Contact Form</h1>
+
+<hr>
+
+<p>Fill in this form to contact the site owners.</p><br>
+
+<form method="POST" action="{{url_for('contact')}}">
+{{ form.csrf_token }}
+
+    <p class ="label">{{ form.name.label }}</p> <strong>(Required)</strong><br>
+    <p>Please enter your full name:</p>
+    {{ form.name }}
+    
+    <ul>
+    {% for error in form.name.errors %}
+        <li class="error-messages" style="color:red;">{{ error }}</li>
+    {% endfor %}
+    </ul>
+    <br>
+    
+    <p class ="label">{{ form.email.label }}</p> <strong>(Required)</strong><br>
+    <p>Please enter your e-mail address:</p>
+    {{ form.email(placeholder='yourname@email.com') }}
+    
+    <ul>
+    {% for error in form.email.errors %}
+        <li class="error-messages" style="color:red;">{{ error }}</li>
+    {% endfor %}
+    </ul>
+    <br>
+    
+    <p class ="label">{{ form.subject.label }}</p> <strong>(Required)</strong><br>
+    <p>Please enter the subject for your message:</p>
+    {{ form.subject }}
+    
+    <ul>
+    {% for error in form.subject.errors %}
+        <li class="error-messages" style="color:red;">{{ error }}</li>
+    {% endfor %}
+    </ul>
+    <br>
+
+    <p class ="label">{{ form.message.label }}</p> <strong>(Required)</strong><br>
+    <p>Please enter the message you would like to send:</p>
+    {{form.message}}
+    
+    <ul>
+    {% for error in form.message.errors %}
+        <li class="error-messages" style="color:red;">{{ error }}</li>
+    {% endfor %}
+    </ul>
+    
+    <button type="submit">Send</button>
+    
+</form>
+
+{% endblock %}

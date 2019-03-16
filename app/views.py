@@ -4,13 +4,12 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-from app import mail
-from flask_mail import Message
-from app import app
+
+from flask_wtf import FlaskForm
+from app import app, mail
 from flask import render_template, request, redirect, url_for, flash
-from forms import MyForm
-from flask import Flask, flash, redirect, render_template, \
-request, url_for
+from flask_mail import Message
+from .forms import ContactForm
 
 
 ###
@@ -26,25 +25,21 @@ def home():
 @app.route('/about/')
 def about():
     """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
-    
-@app.route('/contact',methods=['GET', 'POST'])
+    return render_template('about.html', name="Conrod Smith")
+
+
+@app.route('/contact', methods=['GET','POST'])
 def contact():
-    form = MyForm()
-    if form.validate_on_submit():
-        return redirect('/success')
-    return render_template('contact.html',form=form)
-    
-@app.route('/')
-def index():
-    msg = Message(request.form['subject'], sender=request.form['name','email'], recipients=['to@example.com'])
-    msg.body = request.form['message']
-    mail.send(msg)
+    form = ContactForm()
     if request.method == 'POST':
-        flash('Your email was sent!')
-        return redirect(url_for('index'))
-    else:
-        flash('Something went wrong...')
+        if form.validate_on_submit():
+            msg = Message(request.form['subject'], sender=(request.form['name'], request.form['email']), recipients=['to@example.com'])
+            msg.body = request.form['message']
+            msg.body = 'This is the body of the message'
+            mail.send(msg)
+            flash('Your email has been successfully sent!', 'success')
+            return redirect(url_for('home'))
+    return render_template('contact.html', form=form)
 
 ###
 # The functions below should be applicable to all Flask apps.
